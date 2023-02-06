@@ -19,15 +19,15 @@ def productAdd():
     except:
         print("Something is wrong")
         return 500
-    product = request.args.get('product')
+    id_productname = request.args.get('id_productname')
     quantity = request.args.get('quantity')
     id_list = request.args.get('id_list')
     cursor = conn.cursor()
-    query = "INSERT INTO products (id_list, id_status, name, quantity) VALUES ("+id_list+", 1, '"+product+"', "+quantity+")"
+    query = "INSERT INTO products (id_list, id_status, id_productname, quantity) VALUES ("+id_list+", 1, "+id_productname+", "+quantity+")"
     cursor.execute(query)
     conn.commit()
     conn.close()
-    return " "+product+" is added!"
+    return "Product is added!"
 #изменение продуктов
 @app.route('/product/update', methods=['GET', 'POST'])
 def productUpdate():
@@ -55,16 +55,16 @@ def productUpdate():
 @app.route('/product/listall', methods=['GET', 'POST'])
 def productsList():
     # здесь мы обращаемся к базе данных и показываем список продуктов
-    #try:
-    conn = psycopg2.connect(database="predprofik",
+    try:
+        conn = psycopg2.connect(database="predprofik",
                                 host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
                                 user="predprofik",
                                 password="pKEgUOx3BzUkvC2MpD4e",
                                 port="5432")
 
-    #except:
-        #print("Something is wrong")
-        #return 500
+    except:
+        print("Something is wrong")
+        return 500
     cursor = conn.cursor()
     query = ("SELECT id_product,name FROM products")
     cursor.execute(query)
@@ -82,16 +82,16 @@ def productsList():
 @app.route('/product/listuser', methods=['GET', 'POST'])
 def productsListuser():
     # здесь мы обращаемся к базе данных и показываем список продуктов
-    #try:
-    conn = psycopg2.connect(database="predprofik",
+    try:
+        conn = psycopg2.connect(database="predprofik",
                                 host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
                                 user="predprofik",
                                 password="pKEgUOx3BzUkvC2MpD4e",
                                 port="5432")
 
-    #except:
-        #print("Something is wrong")
-        #return 500
+    except:
+        print("Something is wrong")
+        return 500
     id_user = request.args.get('id_user')
     cursor = conn.cursor()
     query = ("SELECT users.name, users.nickname, products.name, products.quantity FROM products, lists, users WHERE products.id_list=lists.id_list AND lists.id_user=users.id_user AND users.id_user="+id_user)
@@ -179,16 +179,16 @@ def listAdd():
 @app.route('/users/listall', methods=['GET', 'POST'])
 def usersList():
     # здесь мы обращаемся к базе данных и показываем список пользователей
-    #try:
-    conn = psycopg2.connect(database="predprofik",
+    try:
+        conn = psycopg2.connect(database="predprofik",
                                 host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
                                 user="predprofik",
                                 password="pKEgUOx3BzUkvC2MpD4e",
                                 port="5432")
 
-    #except:
-        #print("Something is wrong")
-        #return 500
+    except:
+        print("Something is wrong")
+        return 500
     cursor = conn.cursor()
     query = ("SELECT id_user,email FROM users")
     cursor.execute(query)
@@ -197,6 +197,33 @@ def usersList():
     for (userID, userEmail) in res:
         a.append("Пользователь номер "+str(userID)+", почта: "+userEmail)
         print("Получили из базы пользователя номер ", userID)
+    conn.close()
+    b=''
+    for x in a:
+        b=b+"<p>"+x+"</p>"
+    return b
+#показ справочник названий продуктов
+@app.route('/product/namesall', methods=['GET', 'POST'])
+def productnameList():
+    # здесь мы обращаемся к базе данных и показываем справочник продуктов
+    try:
+        conn = psycopg2.connect(database="predprofik",
+                                    host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
+                                    user="predprofik",
+                                    password="pKEgUOx3BzUkvC2MpD4e",
+                                    port="5432")
+
+    except:
+        print("Something is wrong")
+        return 500
+    cursor = conn.cursor()
+    query = ("SELECT * FROM product_names")
+    cursor.execute(query)
+    res = cursor.fetchall()
+    a = []
+    for (productID, productName) in res:
+        a.append("Номер "+str(productID)+", название: "+productName)
+        print("Получили из базы номер ", productID)
     conn.close()
     b=''
     for x in a:
