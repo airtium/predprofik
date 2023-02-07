@@ -79,7 +79,7 @@ def productsList():
         b=b+"<p>"+x+"</p>"
     return b
 #показ чек-листа конкретного пользователя
-@app.route('/product/listuser', methods=['GET', 'POST'])
+@app.route('/user/list', methods=['GET', 'POST'])
 def productsListuser():
     # здесь мы обращаемся к базе данных и показываем список продуктов
     try:
