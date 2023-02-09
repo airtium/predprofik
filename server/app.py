@@ -1,5 +1,7 @@
 from flask import Flask, request
+from flask import jsonify
 import psycopg2
+
 
 app = Flask(__name__)
 
@@ -51,6 +53,30 @@ def productUpdate():
     conn.commit()
     conn.close()
     return " "+product+" is edited!"
+
+#удаление продукта
+@app.route('/product/delete', methods=['GET', 'POST'])
+def productDelete():
+    try:
+        conn = psycopg2.connect(database="predprofik",
+                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
+                                user="predprofik",
+                                password="pKEgUOx3BzUkvC2MpD4e",
+                                port="5432")
+
+    except:
+        print("Something is wrong")
+        return 500
+
+    id_product = request.args.get('id_product')
+    cursor = conn.cursor()
+    query = "UPDATE products SET id_status=2 WHERE id_product="+id_product+""
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    return " "+id_product+" is deleted!"
+
+
 #вывод чек-листа
 @app.route('/product/listall', methods=['GET', 'POST'])
 def productsList():
@@ -66,7 +92,7 @@ def productsList():
         print("Something is wrong")
         return 500
     cursor = conn.cursor()
-    query = ("SELECT id_product,name FROM products")
+    query = ("SELECT products.id_product, product_names.name FROM products, product_names WHERE products.id_productname=product_names.id_productname AND products.id_status=1")
     cursor.execute(query)
     res = cursor.fetchall()
     a = []
@@ -94,7 +120,7 @@ def productsListuser():
         return 500
     id_user = request.args.get('id_user')
     cursor = conn.cursor()
-    query = ("SELECT users.name, users.nickname, products.name, products.quantity FROM products, lists, users WHERE products.id_list=lists.id_list AND lists.id_user=users.id_user AND users.id_user="+id_user)
+    query = ("SELECT users.name, users.nickname, product_names.name, products.quantity FROM products, lists, users, product_names WHERE products.id_productname=product_names.id_productname AND products.id_status=1 AND products.id_list=lists.id_list AND lists.id_user=users.id_user AND users.id_user="+id_user)
     cursor.execute(query)
     res = cursor.fetchall()
     a = []
@@ -220,15 +246,15 @@ def productnameList():
     query = ("SELECT * FROM product_names")
     cursor.execute(query)
     res = cursor.fetchall()
-    a = []
+    names = []
     for (productID, productName) in res:
-        a.append("Номер "+str(productID)+", название: "+productName)
+        names.append({productID:productName})
+
         print("Получили из базы номер ", productID)
     conn.close()
-    b=''
-    for x in a:
-        b=b+"<p>"+x+"</p>"
-    return b
+    return jsonify(names)
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000)
