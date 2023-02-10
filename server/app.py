@@ -1,8 +1,14 @@
 from flask import Flask, request
 from flask import jsonify
 import psycopg2
-
-
+import os
+from dotenv import load_dotenv
+load_dotenv(".env")
+DB_SERVER = os.getenv('DB_SERVER')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_DATABASE = os.getenv('DB_DATABASE')
+DB_PORT = os.getenv('DB_PORT')
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
@@ -12,11 +18,11 @@ def hello():
 @app.route('/product/add', methods=['GET', 'POST'])
 def productAdd():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
 
     except:
         print("Something is wrong")
@@ -34,11 +40,11 @@ def productAdd():
 @app.route('/product/update', methods=['GET', 'POST'])
 def productUpdate():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
 
     except:
         print("Something is wrong")
@@ -58,12 +64,11 @@ def productUpdate():
 @app.route('/product/delete', methods=['GET', 'POST'])
 def productDelete():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
-
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
     except:
         print("Something is wrong")
         return 500
@@ -82,11 +87,11 @@ def productDelete():
 def productsList():
     # здесь мы обращаемся к базе данных и показываем список продуктов
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
 
     except:
         print("Something is wrong")
@@ -109,11 +114,11 @@ def productsList():
 def productsListuser():
     # здесь мы обращаемся к базе данных и показываем список продуктов
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
 
     except:
         print("Something is wrong")
@@ -136,11 +141,11 @@ def productsListuser():
 @app.route('/user/add', methods=['GET', 'POST'])
 def userAdd():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
 
     except:
         print("Something is wrong")
@@ -159,12 +164,11 @@ def userAdd():
 @app.route('/user/update', methods=['GET', 'POST'])
 def userUpdate():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
-
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
     except:
         print("Something is wrong")
         return 500
@@ -184,12 +188,11 @@ def userUpdate():
 @app.route('/list/add', methods=['GET', 'POST'])
 def listAdd():
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
-
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
     except:
         print("Something is wrong")
         return 500
@@ -206,12 +209,11 @@ def listAdd():
 def usersList():
     # здесь мы обращаемся к базе данных и показываем список пользователей
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                user="predprofik",
-                                password="pKEgUOx3BzUkvC2MpD4e",
-                                port="5432")
-
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
     except:
         print("Something is wrong")
         return 500
@@ -233,12 +235,11 @@ def usersList():
 def productnameList():
     # здесь мы обращаемся к базе данных и показываем справочник продуктов
     try:
-        conn = psycopg2.connect(database="predprofik",
-                                    host="predprofik.ciywqchtdyrs.eu-west-1.rds.amazonaws.com",
-                                    user="predprofik",
-                                    password="pKEgUOx3BzUkvC2MpD4e",
-                                    port="5432")
-
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
     except:
         print("Something is wrong")
         return 500
