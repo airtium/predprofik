@@ -244,7 +244,7 @@ def productnameList():
         print("Something is wrong")
         return 500
     cursor = conn.cursor()
-    query = ("SELECT * FROM product_names")
+    query = ("SELECT id_productname,name FROM product_names")
     cursor.execute(query)
     res = cursor.fetchall()
     names = []
