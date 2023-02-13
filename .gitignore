@@ -6,3 +6,4 @@ server/yolov8x-cls.pt
 server\runs\classify\train2\weights\best.pt
 server\runs\classify\train2\weights\last.pt
 datasets
+datasets
