@@ -5,3 +5,4 @@ server/datasets.zip
 server/yolov8x-cls.pt
 server/runs/classify/train2/weights/best.pt
 server/runs/classify/train2/weights/last.pt
+yolov8n.pt

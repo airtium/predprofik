@@ -413,21 +413,22 @@ def productScanForm():
 def productScan():
     if request.method == 'POST':
         request_data = request.get_json()
-        id_product = request_data['id_product']
+        #id_product = request_data['id_product']
 
     elif request.method == 'GET':
-        id_product = request.args.get('id_product')
+        print("Получили запрос на сканирование")
+        #id_product = request.args.get('id_product')
     else:
         print("Некорректный запрос")
         return 500
-    if not id_product:
-        print("Не указан продукт, распознавание изображения без изменения продукта")
+    #if not id_product:
+        #print("Не указан продукт, распознавание изображения без изменения продукта")
 
     request_files = request.files
     if not request_files:
         print('Нет файлов в запросе')
         return 500
-    request_file = request.files[0]
+    request_file = request.files['file']
     if not request_file:
         print('Не могу выбрать файл')
         return 500
@@ -440,11 +441,12 @@ def productScan():
     filePath = TMP_DIR+"/img.jpg"
     # сохраняем файл
     request_file.save(filePath)
+    print("Сохранили файл")
 
     productMLName = scan(filePath)
 
     #удаляем файл, чтобы не засорять сервер
-    os.remove(filePath)
+    #os.remove(filePath)
 
     return productMLName
 
