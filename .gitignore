@@ -1,2 +1,13 @@
 server/.env
 datasets
+server/datasets
+server/datasets.zip
+server/yolov8x-cls.pt
+server/runs/classify/train2/weights/best.pt
+server/runs/classify/train2/weights/last.pt
+yolov8n.pt
+server/datasets_640.zip
+server/datasets_640
+server/traindataset.zip
+*.pt
+runs

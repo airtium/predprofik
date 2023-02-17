@@ -7,6 +7,7 @@ patience: 50
 batch: 16
 imgsz: 640
 save: true
+save_period: -1
 cache: false
 device: null
 workers: 8
@@ -24,10 +25,12 @@ rect: false
 cos_lr: false
 close_mosaic: 10
 resume: false
+min_memory: false
 overlap_mask: true
 mask_ratio: 4
 dropout: 0.0
 val: true
+split: val
 save_json: false
 save_hybrid: false
 conf: null

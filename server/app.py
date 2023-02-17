@@ -397,7 +397,7 @@ def productScanForm():
     <!doctype html>
     <title>Загрузить новый файл</title>
     <h1>Загрузить новый файл</h1>
-    <form method=post enctype=multipart/form-data action='/product/scan'>
+    <form method=post enctype=multipart/form-data action='/product/scantest'>
       <input type=file name=file>
       <input type=submit value=Upload>
     </form>
@@ -412,43 +412,139 @@ def productScanForm():
 @app.route('/product/scan', methods=['GET', 'POST'])
 def productScan():
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_product = request_data['id_product']
+        id_list = ''
+        if 'id_list' in request.form.values():
+            id_list = request.form['id_list']
+        else:
+            print("Не указан чек-лист, распознавание изображения без удаления продукта")
 
-    elif request.method == 'GET':
-        id_product = request.args.get('id_product')
+        print("Получили запрос на сканирование")
+
+        request_files = request.files
+        if not request_files:
+            print('Нет файлов в запросе')
+            return 500
+        try:
+            request_file = request.files['file']
+        except:
+            print('Не могу забрать файл из запроса')
+            return 500
+        # создаем временную директорию для файлов
+        if not os.path.exists(TMP_DIR+'/upload'):
+            os.makedirs(TMP_DIR+'/upload')
+        filePath = TMP_DIR+"/img.jpg"
+        # сохраняем файл
+        request_file.save(filePath)
+        print("Сохранили файл")
+
+        productMLName = scan(filePath)
+        #удаляем файл, чтобы не засорять сервер
+        os.remove(filePath)
+
+        #получаем название продукта
+        try:
+            conn = psycopg2.connect(database=DB_DATABASE,
+                                    host=DB_SERVER,
+                                    user=DB_USER,
+                                    password=DB_PASSWORD,
+                                    port=DB_PORT)
+        except:
+            print("Не могу установить соединение с базой данных")
+            return 500
+        cursor = conn.cursor()
+        query = ("SELECT name FROM product_names WHERE id_productname="+str(productMLName))
+        cursor.execute(query)
+        res = cursor.fetchone()
+        if res:
+            productName = res[0]
+            print("Название выбранного продукта: ",productName)
+        else:
+            print("Продукт с выбранным номером не найден в справочнике")
+            return 500
+
+        #ищем продукт в чек-листе, уменьшаем количество на 1 и удаляем его из списка если количество = 0
+        if id_list:
+            query = "SELECT id_product, quantity FROM products WHERE id_list="+str(id_list)+" AND id_productname="+str(productMLName)+" AND id_status=1"
+            cursor.execute(query)
+            res = cursor.fetchone()
+            if res:
+                [productID, quantity] = res
+                quantity = quantity - 1
+                query = "UPDATE products SET quantity="+str(quantity)+" WHERE id_product="+str(productID)
+                cursor.execute(query)
+                if quantity==0:
+                    query = "UPDATE products SET id_status=3 WHERE id_list="+str(id_list)+" AND id_productname="+str(productMLName)
+                    cursor.execute(query)
+                conn.commit()
+            else:
+                print("Продукт с названием, которое выбрала нейронка, не найден")
+                productID = 0
+        else:
+            productID = 0
+        conn.close()
+
+        return {'id_productname':productMLName, 'name':productName, 'id_product':productID}
     else:
-        print("Некорректный запрос")
+        print("Некорректный запрос, должен быть POST")
         return 500
-    if not id_product:
-        print("Не указан продукт, распознавание изображения без изменения продукта")
 
-    request_files = request.files
-    if not request_files:
-        print('Нет файлов в запросе')
+#Функция для проверки нейронки
+@app.route('/product/scantest', methods=['GET', 'POST'])
+def productScanTest():
+    if request.method == 'POST':
+        print("Получили запрос на сканирование")
+
+        request_files = request.files
+        if not request_files:
+            print('Нет файлов в запросе')
+            return 500
+        try:
+            request_file = request.files['file']
+        except:
+            print('Не могу забрать файл из запроса')
+            return 500
+        # создаем временную директорию для файлов
+        if not os.path.exists(TMP_DIR+'/upload'):
+            os.makedirs(TMP_DIR+'/upload')
+        filePath = TMP_DIR+"/img.jpg"
+        # сохраняем файл
+        request_file.save(filePath)
+        print("Сохранили файл")
+
+        productMLName = scan(filePath)
+        #удаляем файл, чтобы не засорять сервер
+        os.remove(filePath)
+
+        #получаем название продукта
+        try:
+            conn = psycopg2.connect(database=DB_DATABASE,
+                                    host=DB_SERVER,
+                                    user=DB_USER,
+                                    password=DB_PASSWORD,
+                                    port=DB_PORT)
+        except:
+            print("Не могу установить соединение с базой данных")
+            return 500
+        cursor = conn.cursor()
+        query = ("SELECT name FROM product_names WHERE id_productname="+str(productMLName))
+        cursor.execute(query)
+        res = cursor.fetchone()
+        if res:
+            productName = res[0]
+            print("Название выбранного продукта: ",productName)
+        else:
+            print("Продукт с выбранным номером не найден в справочнике")
+            return 500
+
+        return """
+            <!doctype html>
+            <title>Распознавание ценника</title>
+            <h1>Распознавание ценника</h1>
+            <р>Нейронка распознала продукт, это:</p>
+            """+"<p>Номер продукта:"+str(productMLName)+", название продукта: "+productName+"</html>"
+    else:
+        print("Некорректный запрос, должен быть POST")
         return 500
-    request_file = request.files[0]
-    if not request_file:
-        print('Не могу выбрать файл')
-        return 500
-    if request_file.filename == '':
-        print('Нет выбранного файла')
-        return 500
-    # создаем временную директорию для файлов
-    if not os.path.exists(TMP_DIR+'/upload'):
-        os.makedirs(TMP_DIR+'/upload')
-    filePath = TMP_DIR+"/img.jpg"
-    # сохраняем файл
-    request_file.save(filePath)
-
-    productMLName = scan(filePath)
-
-    #удаляем файл, чтобы не засорять сервер
-    os.remove(filePath)
-
-    return productMLName
-
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000)
