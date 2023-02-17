@@ -36,10 +36,10 @@ def productAdd():
         print("Не могу установить соединение с базой данных")
         return 500
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_productname = request_data['id_productname']
-        quantity = request_data['quantity']
-        id_list = request_data['id_list']
+        #request_data = request.get_json()
+        id_productname = request.form['id_productname']
+        quantity = request.form['quantity']
+        id_list = request.form['id_list']
 
     elif request.method == 'GET':
         id_productname = request.args.get('id_productname')
