@@ -80,10 +80,10 @@ def productUpdate():
         print("Не могу установить соединение с базой данных")
         return 500
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_product = request_data['id_product']
-        quantity = request_data['quantity']
-        id_productname = request_data['id_productname']
+        #request_data = request.get_json()
+        id_product = request.form['id_product']
+        quantity = request.form['quantity']
+        id_productname = request.form['id_productname']
 
     elif request.method == 'GET':
         id_product = request.args.get('id_product')
@@ -125,8 +125,8 @@ def productDelete():
         return 500
 
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_product = request_data['id_product']
+        #request_data = request.get_json()
+        id_product = request.form['id_product']
 
     elif request.method == 'GET':
         id_product = request.args.get('id_product')
@@ -187,8 +187,8 @@ def productsListuser():
         return 500
 
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_user = request_data['id_user']
+        #request_data = request.get_json()
+        id_user = request.form['id_user']
 
     elif request.method == 'GET':
         id_user = request.args.get('id_user')
@@ -225,11 +225,11 @@ def userAdd():
         print("Не могу установить соединение с базой данных")
         return 500
     if request.method == 'POST':
-        request_data = request.get_json()
-        email = request_data('email')
-        name = request_data('name')
-        nickname = request_data('nickname')
-        password = request_data('password')
+        #request_data = request.get_json()
+        email = request.form['email']
+        name = request.form['name']
+        nickname = request.form['nickname']
+        password = request.form['password']
 
     elif request.method == 'GET':
         email = request.args.get('email')
@@ -275,12 +275,12 @@ def userUpdate():
         print("Не могу установить соединение с базой данных")
         return 500
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_user = request_data('id_user')
-        email = request_data('email')
-        name = request_data('name')
-        nickname = request_data('nickname')
-        password = request_data('password')
+        #request_data = request.get_json()
+        id_user = request.form['id_user']
+        email = request.form['email']
+        name = request.form['name']
+        nickname = request.form['nickname']
+        password = request.form['password']
 
     elif request.method == 'GET':
         id_user = request.ards.get('id_user')
@@ -316,8 +316,8 @@ def listAdd():
         print("Не могу установить соединение с базой данных")
         return 500
     if request.method == 'POST':
-        request_data = request.get_json()
-        id_user = request.args.get('id_user')
+        #request_data = request.get_json()
+        id_user = request.form['id_user']
 
     elif request.method == 'GET':
         id_user = request.ards.get('id_user')
