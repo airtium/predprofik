@@ -1,0 +1,10 @@
+INSERT INTO product_names (name, ml_name) VALUES ('Печенье сладкое с маком','biscuits');
+INSERT INTO product_names (name, ml_name) VALUES ('Капуста брокколи','broccoli');
+INSERT INTO product_names (name, ml_name) VALUES ('Сыр полутвердый','cheese');
+INSERT INTO product_names (name, ml_name) VALUES ('Кофе растворимый с добавлением молотого','coffe');
+INSERT INTO product_names (name, ml_name) VALUES ('Творог мягкий 2%','curd');
+INSERT INTO product_names (name, ml_name) VALUES ('Тесто замороженное дрожжевое','dough');
+INSERT INTO product_names (name, ml_name) VALUES ('Молоко 3,2% пастеризованное','milk');
+INSERT INTO product_names (name, ml_name) VALUES ('Блинчики с мясом','pancakes');
+INSERT INTO product_names (name, ml_name) VALUES ('Сметана из топленых сливок 15%','sourcream');
+INSERT INTO product_names (name, ml_name) VALUES ('Чай черный листовой','tea')
