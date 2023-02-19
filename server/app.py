@@ -416,9 +416,10 @@ def productScan():
         if 'id_list' in request.form.values():
             id_list = request.form['id_list']
         else:
-            print("Не указан чек-лист, распознавание изображения без удаления продукта")
-
+            print("Не указан чек-лист, распознавание изображения без удаления продукта")     
+            id_list = 1
         print("Получили запрос на сканирование")
+
 
         request_files = request.files
         if not request_files:
