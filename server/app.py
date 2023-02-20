@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request # 1-7 строки: импортируются вспомогательные библиотеки
 from flask import jsonify
 import psycopg2
 import os
@@ -8,7 +8,7 @@ from mlmodel import scan
 load_dotenv(".env")
 DB_SERVER = os.getenv('DB_SERVER')
 DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_PASSWORD = os.getenv('DB_PASSWORD') # 8-14 строки: шифрование пароля. Нужно для того чтобы нельзя было взломать аккаунт
 DB_DATABASE = os.getenv('DB_DATABASE')
 DB_PORT = os.getenv('DB_PORT')
 TMP_DIR = os.getenv('TMP_DIR')
@@ -25,52 +25,53 @@ def hello():
 
 
 # добавление продуктов
-@app.route('/product/add', methods=['GET', 'POST'])
+@app.route('/product/add', methods=['GET', 'POST']) # Метод GET и POST - это что функция получает в качестве параметров
+# /product/add - запрос, по которому мы идем
 def productAdd():
-    try:
+    try: # 30-35 строки: шифрование
         conn = psycopg2.connect(database=DB_DATABASE,
                                 host=DB_SERVER,
                                 user=DB_USER,
-                                password=DB_PASSWORD,
+                                password=DB_PASSWORD, 
                                 port=DB_PORT)
 
-    except:
+    except: # метод except нужен, чтобы обходить ошибку и не ломать работу приложения
         print("Не могу установить соединение с базой данных")
-        return 500
+        return 500 # возвращает ошибку клиенту
     if request.method == 'POST':
         # request_data = request.get_json()
         id_productname = request.form['id_productname']
-        quantity = request.form['quantity']
+        quantity = request.form['quantity'] # 41-45 строки: приложение отдает в качестве данных
         id_list = request.form['id_list']
 
     elif request.method == 'GET':
         id_productname = request.args.get('id_productname')
-        quantity = request.args.get('quantity')
+        quantity = request.args.get('quantity') # 47-50 строки: программа отдает в качестве данных
         id_list = request.args.get('id_list')
     else:
         print("Некорректный запрос")
         return 500
     if (not id_productname):
         print("Не указано название продукта")
-        return 500
+        return 500 # 51-60 строки: если произойдет ошибка, она выведется клиенту
     if not quantity:
         quantity = 1
     if not id_list:
         id_list = 1
 
-    cursor = conn.cursor()
+    cursor = conn.cursor() # метод cursor используется для управления контекстом операции выборки. cursor — это объект в памяти компьютера с методами для проведения SQL команд, хранения итогов их выполнения и методов доступа к ним.
     query = "INSERT INTO products (id_list, id_status, id_productname, quantity) VALUES (" + str(
-        id_list) + ", 1, " + str(id_productname) + ", " + str(quantity) + ") RETURNING id_product;"
+        id_list) + ", 1, " + str(id_productname) + ", " + str(quantity) + ") RETURNING id_product;" # SQL-запрос с базой данных
     cursor.execute(query)
     id_product = cursor.fetchone()[0]
-    conn.commit()
+    conn.commit() # применяет изменения
     conn.close()
-    print('Добавлен продукт, его номер: ', id_product)
-    return {'id_product': id_product, 'operation': 'add'}
+    print('Добавлен продукт, его номер: ', id_product) # вывод в терминале
+    return {'id_product': id_product, 'operation': 'add'} # возварщает приложению запрос
 
 
 # изменение продуктов
-@app.route('/product/update', methods=['GET', 'POST'])
+@app.route('/product/update', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def productUpdate():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -106,7 +107,7 @@ def productUpdate():
         query = "UPDATE products SET quantity=" + str(quantity) + " WHERE id_product=" + str(id_product) + ""
     elif not quantity:
         query = "UPDATE products SET id_productname=" + str(id_productname) + " WHERE id_product=" + str(
-            id_product) + ""
+            id_product) + "" # SQL работа
 
     cursor = conn.cursor()
     cursor.execute(query)
@@ -117,7 +118,7 @@ def productUpdate():
 
 
 # удаление продукта
-@app.route('/product/delete', methods=['GET', 'POST'])
+@app.route('/product/delete', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def productDelete():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -151,7 +152,7 @@ def productDelete():
     return {'id_product': id_product, 'operation': 'delete'}
 
 # удаление продукта по названию
-@app.route('/product/deletename', methods=['GET', 'POST'])
+@app.route('/product/deletename', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def productDeleteName():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -191,7 +192,7 @@ def productDeleteName():
     print('Продукт удален, его номер: ', productID)
     return {'id_product': productID, 'operation': 'delete'}
 # вывод чек-листа со всеми продуктами всех пользователей
-@app.route('/product/listall', methods=['GET', 'POST'])
+@app.route('/product/listall', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка) через SQL
 def productsList():
     # здесь мы обращаемся к базе данных и показываем список продуктов
     try:
@@ -218,7 +219,7 @@ def productsList():
 
 
 # показ чек-листов конкретного пользователя
-@app.route('/user/list', methods=['GET', 'POST'])
+@app.route('/user/list', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def productsListuser():
     # здесь мы обращаемся к базе данных и показываем список продуктов
     try:
@@ -262,7 +263,7 @@ def productsListuser():
 
 
 # добавление пользователя
-@app.route('/user/add', methods=['GET', 'POST'])
+@app.route('/user/add', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def userAdd():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -313,7 +314,7 @@ def userAdd():
 
 
 # изменение пользователя
-@app.route('/user/update', methods=['GET', 'POST'])
+@app.route('/user/update', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def userUpdate():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -355,7 +356,7 @@ def userUpdate():
 
 
 # добавление чек-листа
-@app.route('/list/add', methods=['GET', 'POST'])
+@app.route('/list/add', methods=['GET', 'POST']) # аналогично функции @app.route (28 строка)
 def listAdd():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
@@ -453,14 +454,13 @@ def productScanForm():
       <input type=submit value=Upload>
     </form>
     </html>    
-
     """
-    return form
+    return form язык HTML для раобты с нейронкой
 
 
 # Распознавание продукта с помощью модели машинного обучения, обработку делаем в отдельном файле
 # здесь получаем файл, сохраняем его на диск во временную папку и передаем на обработку
-@app.route('/product/scan', methods=['GET', 'POST'])
+@app.route('/product/scan', methods=['GET', 'POST']) 
 def productScan():
     if request.method == 'POST':
         # id_list = ''
@@ -493,7 +493,7 @@ def productScan():
         # os.remove(filePath)
 
         # получаем название продукта
-        try:
+        try: то же самое
             conn = psycopg2.connect(database=DB_DATABASE,
                                     host=DB_SERVER,
                                     user=DB_USER,
@@ -513,7 +513,7 @@ def productScan():
             print("Продукт с выбранным номером не найден в справочнике")
             return 500
 
-
+ # Дальше идет процесс удаления отсканированного продукта аналогично процедуре удаления
         if id_list:
             query = "SELECT id_product, quantity FROM products WHERE id_list=" + str(
                 id_list) + " AND id_productname=" + str(productMLName) + " AND id_status=1"
@@ -539,7 +539,7 @@ def productScan():
 
 
 # Функция для проверки нейронки
-@app.route('/product/scantest', methods=['GET', 'POST'])
+@app.route('/product/scantest', methods=['GET', 'POST']) 
 def productScanTest():
     if request.method == 'POST':
         print("Получили запрос на сканирование")
@@ -597,5 +597,5 @@ def productScanTest():
         return 500
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8000)
+if __name__ == '__main__': 
+    app.run(host="0.0.0.0", port=8000) # Dыполняется поставленная задача, начинается работа серверной
