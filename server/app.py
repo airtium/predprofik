@@ -151,8 +151,8 @@ def productDelete():
     return {'id_product': id_product, 'operation': 'delete'}
 
 # удаление продукта по названию
-@app.route('/product/delete', methods=['GET', 'POST'])
-def productDelete():
+@app.route('/product/deletename', methods=['GET', 'POST'])
+def productDeleteName():
     try:
         conn = psycopg2.connect(database=DB_DATABASE,
                                 host=DB_SERVER,
