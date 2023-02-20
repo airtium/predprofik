@@ -150,7 +150,46 @@ def productDelete():
     print('Продукт удален, его номер: ', id_product)
     return {'id_product': id_product, 'operation': 'delete'}
 
+# удаление продукта по названию
+@app.route('/product/delete', methods=['GET', 'POST'])
+def productDelete():
+    try:
+        conn = psycopg2.connect(database=DB_DATABASE,
+                                host=DB_SERVER,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                port=DB_PORT)
+    except:
+        print("Не могу установить соединение с базой данных")
+        return 500
 
+    if request.method == 'POST':
+        # request_data = request.get_json()
+        id_productname = request.form['id_productname']
+
+    elif request.method == 'GET':
+        id_productname = request.args.get('id_productname')
+    else:
+        print("Некорректный запрос")
+        return 500
+    if not id_productname:
+        print("Не указан продукт")
+        return 500
+
+    cursor = conn.cursor()
+    query = "SELECT id_product, quantity FROM products WHERE id_productname=" + str(
+        id_productname) + " AND id_status=1"
+    cursor.execute(query)
+    res = cursor.fetchone()
+    productID=''
+    if res:
+        [productID, quantity] = res
+        query = "DELETE from products WHERE id_product=" + str(productID) + ""
+        cursor.execute(query)
+        conn.commit()
+    conn.close()
+    print('Продукт удален, его номер: ', productID)
+    return {'id_product': productID, 'operation': 'delete'}
 # вывод чек-листа со всеми продуктами всех пользователей
 @app.route('/product/listall', methods=['GET', 'POST'])
 def productsList():
@@ -429,15 +468,8 @@ def productScan():
         #    id_list = request.form['id_list']
         # else:
         #   print("Не указан чек-лист, распознавание изображения без удаления продукта")
-        #id_list = ''
-        #if 'id_list' in request.form.values():
-        #    id_list = request.form['id_list']
-        #else:
-        #   print("Не указан чек-лист, распознавание изображения без удаления продукта")     
-
         id_list = 1
         print("Получили запрос на сканирование")
-
 
         request_files = request.files
         if not request_files:
@@ -457,13 +489,8 @@ def productScan():
         print("Сохранили файл")
 
         productMLName = scan(filePath)
-
         # удаляем файл, чтобы не засорять сервер
         # os.remove(filePath)
-
-        #удаляем файл, чтобы не засорять сервер
-        #os.remove(filePath)
-
 
         # получаем название продукта
         try:
