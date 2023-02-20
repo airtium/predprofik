@@ -513,21 +513,17 @@ def productScan():
             print("Продукт с выбранным номером не найден в справочнике")
             return 500
 
-        # ищем продукт в чек-листе, уменьшаем количество на 1 и удаляем его из списка если количество = 0
+
         if id_list:
             query = "SELECT id_product, quantity FROM products WHERE id_list=" + str(
                 id_list) + " AND id_productname=" + str(productMLName) + " AND id_status=1"
             cursor.execute(query)
             res = cursor.fetchone()
+            productID = ''
             if res:
                 [productID, quantity] = res
-                quantity = quantity - 1
-                query = "UPDATE products SET quantity=" + str(quantity) + " WHERE id_product=" + str(productID)
+                query = "DELETE from products WHERE id_product=" + str(productID) + ""
                 cursor.execute(query)
-                if quantity == 0:
-                    query = "UPDATE products SET id_status=3 WHERE id_list=" + str(
-                        id_list) + " AND id_productname=" + str(productMLName)
-                    cursor.execute(query)
                 conn.commit()
             else:
                 print("Продукт с названием, которое выбрала нейронка, не найден")
