@@ -424,19 +424,17 @@ def productScanForm():
 @app.route('/product/scan', methods=['GET', 'POST'])
 def productScan():
     if request.method == 'POST':
-<<<<<<< HEAD
         # id_list = ''
         # if 'id_list' in request.form.values():
         #    id_list = request.form['id_list']
         # else:
         #   print("Не указан чек-лист, распознавание изображения без удаления продукта")
-=======
         #id_list = ''
         #if 'id_list' in request.form.values():
         #    id_list = request.form['id_list']
         #else:
         #   print("Не указан чек-лист, распознавание изображения без удаления продукта")     
->>>>>>> 001884e9ab06cce102072fc2d26517e4420f71bd
+
         id_list = 1
         print("Получили запрос на сканирование")
 
@@ -459,13 +457,13 @@ def productScan():
         print("Сохранили файл")
 
         productMLName = scan(filePath)
-<<<<<<< HEAD
+
         # удаляем файл, чтобы не засорять сервер
         # os.remove(filePath)
-=======
+
         #удаляем файл, чтобы не засорять сервер
         #os.remove(filePath)
->>>>>>> 001884e9ab06cce102072fc2d26517e4420f71bd
+
 
         # получаем название продукта
         try:
