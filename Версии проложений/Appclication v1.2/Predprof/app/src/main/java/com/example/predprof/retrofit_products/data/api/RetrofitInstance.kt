@@ -7,7 +7,7 @@ class RetrofitInstance {
     companion object RetrofitInstance {
         private val retrofit by lazy {
             Retrofit.Builder()
-                .baseUrl("http://ec2-3-253-100-1.eu-west-1.compute.amazonaws.com:8000/")
+                .baseUrl("http://ec2-63-33-192-125.eu-west-1.compute.amazonaws.com:8000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
